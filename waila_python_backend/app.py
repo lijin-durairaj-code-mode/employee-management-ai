@@ -27,10 +27,11 @@ import ast
 from prompts.templates import query_prompt_template,answer_prompt
 from helper.data_center import load_db
 from helper.prompting_template import QueryOutput,QueryInput
+from prompts.user_query_rewrite_prompt import  query_rewrite
 
 #fatsapi
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -66,6 +67,24 @@ def clean_up_string(s):
     except Exception:
         # In case it's not a valid Python literal
         return s
+    
+
+def user_query_rewrite():
+    rewrite_user_query_prompt=PromptTemplate(template=query_rewrite)
+    llm = HuggingFaceEndpoint(
+    repo_id="meta-llama/Llama-3.2-3B-Instruct",
+    task="text-generation"
+    )
+    parser=StrOutputParser()
+    model = ChatHuggingFace(llm=llm)
+
+    chain=(
+    rewrite_user_query_prompt 
+    | model
+    | parser
+)
+    return chain
+
 
 def intial_load():
     parser=StrOutputParser()
@@ -98,6 +117,26 @@ def intial_load():
 def welcome(request:Request):
   request.session.clear()
 
+@app.post('/re-write-question',response_class=PlainTextResponse)
+def question_rephrase(request:Request,question:str):    
+    session=request.session
+    if 'query_load' not in request.session:
+       session['query_load']="intial_load"
+
+    if session['query_load']=="intial_load":
+       session['query_load']="second_load"
+       question_chain=user_query_rewrite()
+       app.state.question_chain=question_chain
+       response=question_chain.invoke({
+          "user_question":question
+       })
+       return response
+    else:
+       question_chain=getattr(app.state,"question_chain",None)
+       response=question_chain.invoke({
+            "user_question":question
+        })
+       return response
 
 @app.post('/question')
 async def fetch_employee_details(request:Request,question:QueryInput):
@@ -122,14 +161,18 @@ async def fetch_employee_details(request:Request,question:QueryInput):
     chain = getattr(app.state, "chain", None)
     if not chain:
         return JSONResponse(status_code=500, content={"error": "Chain not initialized"})
-    response=chain.invoke({
-     "dialect": db.dialect,
-    "top_k": 10,
-    "table_info": db.table_info,
-    "input": question.query,
-})
+    try:
+        response=chain.invoke({
+        "dialect": db.dialect,
+        "top_k": 10,
+        "table_info": db.table_info,
+        "input": question.query,
+        })    
+        return response
+    except Exception as ex:
+       print(datetime.today)
+       print(ex)
     
-    return response
 
 
   

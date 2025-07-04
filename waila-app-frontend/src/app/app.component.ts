@@ -45,6 +45,7 @@ export class AppComponent implements OnInit {
           'answer':res
          })
       },()=>{
+        this.loader=false;  
         alert('error')
       },()=>{
         this.myForm.reset();

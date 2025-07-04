@@ -7,3 +7,4 @@
 /waila_python_backend/.env
 /waila_python_backend/__pycache__
 /waila_python_backend/*/__pycache__
+/waila_python_backend/*.db
