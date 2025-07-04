@@ -1,0 +1,10 @@
+langchain 
+langchain_core 
+langchain-huggingface 
+langchain_experimental 
+langchain-community 
+langchainhub
+langchain-mistralai
+python-dotenv
+fastapi[standard]
+itsdangerous

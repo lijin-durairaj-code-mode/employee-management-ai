@@ -1,0 +1,9 @@
+#FRONT END
+/waila-app-frontend/node_modules/
+/waila-app-frontend/.angular/cache/
+
+
+#BACKEND
+/waila_python_backend/.env
+/waila_python_backend/__pycache__
+/waila_python_backend/*/__pycache__

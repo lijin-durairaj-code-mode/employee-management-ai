@@ -1,0 +1,54 @@
+<div *ngIf="loader"  style="height: 100%;
+overflow: hidden;
+position: fixed;
+width: 100%;">
+  <div style="position: absolute;
+  top: 41%;
+  left: 49%;" class="spinner-border" role="status">
+    
+  </div>
+</div>
+<div class="container-fluid">
+  <div class="row">    
+    <div style="text-indent: 478px;
+    padding-top: 14px;">
+      <div style="width: 10%; float: left;">
+        <img style="height: 70px;" src="../assets/images/star-image.png">
+      </div>
+      <div style="width: 90%;float: left;">
+        <h3>employee information</h3>  
+      </div>
+    </div>
+    <div class="col-sm-12" style="height: 550px">
+     <div class="w-100 h-100 bg-light border" style="max-height: 550px;
+    overflow-y: scroll;">
+      <ng-container *ngFor="let d of resolution_arr;let i=index">
+        <ul>
+          <li><span>Question:</span> {{d.question}}</li>
+          <li><span>Answer:</span> {{d.answer}}</li>
+        </ul>
+      </ng-container>
+     </div>
+    </div>
+
+    <div class="col-sm-12 mt-2 text-center mx-auto">
+      <form class="col-sm-12" [formGroup]="myForm" (ngSubmit)="onSubmit()">       
+        <div class="form-group">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-sm-10">
+                <input type="text" class="form-control w-100 border mx-auto border-info" placeholder="Enter your question here." id="askquestion" formControlName="aq" >
+                <div *ngIf="myForm.get('aq')?.invalid && myForm.get('aq')?.touched" style="color:red">
+                 Please ask a question
+                </div>   
+              </div>
+              <div class="col-sm-2">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>        
+      </form>
+    </div>
+  </div>
+</div>
