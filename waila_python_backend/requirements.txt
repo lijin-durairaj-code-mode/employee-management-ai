@@ -8,3 +8,5 @@ langchain-mistralai
 python-dotenv
 fastapi[standard]
 itsdangerous
+langsmith
+langgraph
