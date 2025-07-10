@@ -140,6 +140,7 @@ def answer_from_context(state:employee_state):
       | model
       | parser
   )
+  
   result= chain.invoke({
       "context":state['context'],
       "question":state['query']
@@ -158,7 +159,6 @@ def build_graph():
 
     graph_builder.add_edge(START,'rewrite_query')    
     graph_builder.add_edge('rewrite_query','get_SQL_statements')
-    # graph_builder.add_edge('get_SQL_statements',END)
     graph_builder.add_edge('get_SQL_statements','execute_sql_query')
     graph_builder.add_edge('execute_sql_query','answer_from_context')
     graph_builder.add_edge('answer_from_context',END)

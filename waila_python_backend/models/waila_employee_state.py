@@ -10,3 +10,4 @@ class employee_state(TypedDict):
     re_written_query:str
     sql_query:str
     context:str
+    answer:str
