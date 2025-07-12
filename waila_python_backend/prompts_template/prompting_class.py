@@ -10,3 +10,5 @@ class QueryInput(BaseModel):
 class RewriteOutput(BaseModel):
   response:str=Field(...,description='The rewritten query from the LLM')
   
+class RewriteQueryOutputFormat(BaseModel):
+  query:list=Field(...,description='The re-written user query')

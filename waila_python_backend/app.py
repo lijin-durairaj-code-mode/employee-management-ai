@@ -32,7 +32,7 @@ from utils.data_center import load_db
 from prompts_template.prompting_class import QueryOutput, QueryInput
 from prompts_template.user_query_rewrite_prompt import  query_rewrite
 from models.waila_employee_state import employee_state
-from utils.app_func import build_graph
+from waila_python_backend.utils.common import build_graph
 
 
 
