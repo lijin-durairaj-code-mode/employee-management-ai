@@ -85,11 +85,6 @@ Now rewrite the following:
 
 Original: {user_question}
 Rewritten: [/INST]
-
-return the output in this format
-{{
-  "re-written-query":"the re written query"
-}}
 """
 context_prompt='''
   <s>[INST] Use the following context to answer the user's question. If the answer is not in the context, respond with "I don't know."
@@ -102,3 +97,19 @@ Question:
 
 Answer: [/INST]
   '''
+
+rewrite_3_prompt = '''
+<s><INST>You are an expert in rephrasing complex employee-related questions into short, compressed, and easy-to-understand alternatives.
+Given a user’s original question, rewrite it into 3 distinct simplified queries that retain the core meaning but are easier to process and interpret.
+
+Each rewritten query should:
+- Be short and direct (1–2 lines)
+- Avoid unnecessary words
+- Use simpler language
+- Capture the original intent accurately
+
+{format_instructions}
+
+Question: {input_question}
+Answer:</INST>
+'''.strip()

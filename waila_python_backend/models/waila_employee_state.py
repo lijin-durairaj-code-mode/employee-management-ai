@@ -11,3 +11,6 @@ class employee_state(TypedDict):
     sql_query:str
     context:str
     answer:str
+    options_query_arr:str
+    times_of_user_response:int
+    

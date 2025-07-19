@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 import { ToastrMessage } from '../utils/toastr-message'
+import { EmployeeResponse } from 'src/model/employee_response_state';
 
 
 //constants
@@ -29,22 +30,39 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(){
-    this.http.get(BASE_URL)
-    .subscribe(res=>{
-      console.log(res)
-    },(error)=>{
-      this.toastr.error('error',error)
-    },)
+    // this.http.get(BASE_URL)
+    // .subscribe(res=>{
+    //   console.log(res)
+    // },(error)=>{
+    //   this.toastr.error('error',error)
+    // },)
   }
 
   get_user_response(e:any){
+    this.loader=true
     const input = e.target as HTMLInputElement;
     const label = document.querySelector(`label[for="${input.id}"]`);
     const labelText = label ? label.textContent?.trim() : 'No label found';
+    this.re_write_query_arr=[];
   
     console.log('Selected text:', labelText);
+    let request={
+      'query':labelText
+    }
+    this.http.post<EmployeeResponse>(BASE_URL+'human_feedback',request)
+    .subscribe(res=>{
+      this.loader=false;
+      this.resolution_arr.push({
+        'question':this.myForm.controls['aq'].value,
+        'answer':res.answer
+       })
+    },(error)=>{
+      this.loader=false;
+      this.toastr.error('error',error)
+    })
   }
 
+  
 
   onSubmit() {
     if (this.myForm.valid) {
@@ -52,16 +70,24 @@ export class AppComponent implements OnInit {
       let request={
         'query':this.myForm.controls['aq'].value
       }
-      this.http.post(BASE_URL+'question',request)
-      .subscribe(res=>{
-        this.loader=false;        
+      this.http.post<EmployeeResponse>(BASE_URL+'question',request)
+      .subscribe((res:EmployeeResponse)=>{
+        this.loader=false;   
+      if(res?.options_query_arr?.['answer'].length>0){
+      let _d:any=res.options_query_arr;
+      for(let i=0;i<_d['answer'].length;i++){
+        this.re_write_query_arr.push(_d['answer'][i])
+      }
+      }else{
         this.resolution_arr.push({
           'question':this.myForm.controls['aq'].value,
-          'answer':res
+          'answer':res.answer
          })
-      },()=>{
-        this.loader=false;  
-        alert('error')
+      }
+        
+      },(error)=>{
+        this.loader=false;
+        this.toastr.error('error',error)
       },()=>{
         this.myForm.reset();
       })
